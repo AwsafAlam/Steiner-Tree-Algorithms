@@ -260,4 +260,6 @@ if __name__ == '__main__':
     g = create_random_graph(40, 0.10)
     terminals = pick_random_terminals(g)
     tree_edges = get_steiner_tree(g, terminals)
-    render_steiner_solution(g, terminals, tree_edges)
+    print("Terminals & Tree Edges:")
+    print(terminals, tree_edges)
+    # render_steiner_solution(g, terminals, tree_edges)
