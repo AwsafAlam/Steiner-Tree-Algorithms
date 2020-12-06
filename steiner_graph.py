@@ -262,7 +262,7 @@ def algorithm_u(ns, m):
 
 if __name__ == '__main__':
 
-    input_list = [0]
+    input_list = [0,3,5,7,9,11,13,15]
     for input in input_list:
 
         INPUT="./instances/instance"+str(input).zfill(3)+".gr"
