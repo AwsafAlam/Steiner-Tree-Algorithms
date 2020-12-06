@@ -57,6 +57,7 @@ def render_steiner_solution(g, terminals, tree_edges):
 def create_random_graph(n, p):
     vs = [str(i) for i in range(n)]
     edge_count = int(round(p*(n-1)*n/2))
+    print("n: {} | Edges - rand-graph: {}".format(n,edge_count))
     es = sample_iterable(generate_all_possible_edges(vs), edge_count)
     g = {v: [] for v in vs}
     for v0, v1 in es:
@@ -257,15 +258,67 @@ def algorithm_u(ns, m):
     return f(m, n, 0, n, a)
 
 if __name__ == '__main__':
-    g = create_random_graph(20, 0.10)
-    terminals = pick_random_terminals(g)
+
+    INPUT="./instances/instance000.gr"
+    f = open(INPUT, 'r')
+    lines = f.readlines()
+    Nodes = int(lines[1].split()[1])
+    Edges = int(lines[2].split()[1])
+
+    vs = [str(i) for i in range(Nodes)]
+    g = {v: [] for v in vs}
+
+    print(Nodes, Edges)
+    
+    lineCount = 3
+    while str(lines[lineCount].split()[0]) != "END":
+        if(len(lines[lineCount].split()) == 0):
+            continue
+
+        v0 = str(int(lines[lineCount].split()[1]) - 1)
+        v1 = str(int(lines[lineCount].split()[2]) - 1)
+        g[v0].append(v1)
+        g[v1].append(v0)
+        lineCount += 1
+    
+    lineCount += 3
+    noOfTerminals = int(lines[lineCount].split()[1])
+    lineCount += 1
+    term = []
+    while str(lines[lineCount].split()[0]) != "END":    
+        if(len(lines[lineCount].split()) == 0):
+            continue
+        print(lines[lineCount])
+        term.append(lines[lineCount].split()[1])
+        
+        lineCount += 1
+    
+    terminals = frozenset(term)
+    print("No. of terminals : {}".format(noOfTerminals))
+    print("Input graph :",g)
+    print("Terminals", terminals)
+    print("------------------------------")
+    ####
+    # Random graph 
+    # g = create_random_graph(5, 0.10)
+    # print(g)
+    # terminals = pick_random_terminals(g)
+    # print(terminals)
     # starting time
+    ###
+
     start = time.time()
 
     tree_edges = get_steiner_tree(g, terminals)
-    # end time
+    
     end = time.time()
-    print("Terminals & Tree Edges:")
-    print(terminals, tree_edges)
+    
+    print("Terminals: ----")
+    print(terminals)
+    print("Tree edges ---- ")
+    print(tree_edges)
+
     print(f"Runtime of the program is {end - start}")
+    f.close()
+
     # render_steiner_solution(g, terminals, tree_edges)
