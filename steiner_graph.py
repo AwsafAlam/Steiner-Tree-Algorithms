@@ -259,66 +259,70 @@ def algorithm_u(ns, m):
 
 if __name__ == '__main__':
 
-    INPUT="./instances/instance000.gr"
-    f = open(INPUT, 'r')
-    lines = f.readlines()
-    Nodes = int(lines[1].split()[1])
-    Edges = int(lines[2].split()[1])
+    input_list = [7]
+    for input in input_list:
 
-    vs = [str(i) for i in range(Nodes)]
-    g = {v: [] for v in vs}
+        INPUT="./instances/instance"+str(input).zfill(3)+".gr"
 
-    print(Nodes, Edges)
-    
-    lineCount = 3
-    while str(lines[lineCount].split()[0]) != "END":
-        if(len(lines[lineCount].split()) == 0):
-            continue
+        f = open(INPUT, 'r')
+        lines = f.readlines()
+        Nodes = int(lines[1].split()[1])
+        Edges = int(lines[2].split()[1])
 
-        v0 = str(int(lines[lineCount].split()[1]) - 1)
-        v1 = str(int(lines[lineCount].split()[2]) - 1)
-        g[v0].append(v1)
-        g[v1].append(v0)
-        lineCount += 1
-    
-    lineCount += 3
-    noOfTerminals = int(lines[lineCount].split()[1])
-    lineCount += 1
-    term = []
-    while str(lines[lineCount].split()[0]) != "END":    
-        if(len(lines[lineCount].split()) == 0):
-            continue
-        print(lines[lineCount])
-        term.append(lines[lineCount].split()[1])
+        vs = [str(i) for i in range(Nodes)]
+        g = {v: [] for v in vs}
+
+        print(Nodes, Edges)
         
+        lineCount = 3
+        while str(lines[lineCount].split()[0]) != "END":
+            if(len(lines[lineCount].split()) == 0):
+                continue
+
+            v0 = str(int(lines[lineCount].split()[1]) - 1)
+            v1 = str(int(lines[lineCount].split()[2]) - 1)
+            g[v0].append(v1)
+            g[v1].append(v0)
+            lineCount += 1
+        
+        lineCount += 3
+        noOfTerminals = int(lines[lineCount].split()[1])
         lineCount += 1
-    
-    terminals = frozenset(term)
-    print("No. of terminals : {}".format(noOfTerminals))
-    print("Input graph :",g)
-    print("Terminals", terminals)
-    print("------------------------------")
-    ####
-    # Random graph 
-    # g = create_random_graph(5, 0.10)
-    # print(g)
-    # terminals = pick_random_terminals(g)
-    # print(terminals)
-    # starting time
-    ###
+        term = []
+        while str(lines[lineCount].split()[0]) != "END":    
+            if(len(lines[lineCount].split()) == 0):
+                continue
+            # print(lines[lineCount])
+            term.append(lines[lineCount].split()[1])
+            
+            lineCount += 1
+        
+        terminals = frozenset(term)
+        print("No. of terminals : {}".format(noOfTerminals))
+        # print("Input graph :",g)
+        # print("Terminals", terminals)
+        ####
+        # Random graph 
+        # g = create_random_graph(5, 0.10)
+        # print(g)
+        # terminals = pick_random_terminals(g)
+        # print(terminals)
+        # starting time
+        ###
 
-    start = time.time()
+        start = time.time()
 
-    tree_edges = get_steiner_tree(g, terminals)
-    
-    end = time.time()
-    
-    print("Terminals: ----")
-    print(terminals)
-    print("Tree edges ---- ")
-    print(tree_edges)
-
-    print(f"Runtime of the program is {end - start}")
-    f.close()
+        tree_edges = get_steiner_tree(g, terminals)
+        
+        end = time.time()
+        
+        print("Terminals: ----")
+        print(terminals)
+        print("Tree edges ---- ")
+        print(tree_edges)
+        print(f"Cost : {len(tree_edges)*2}")
+        print(f"Runtime of the program is {end - start}")
+        print("------------------------------")
+        f.close()
 
     # render_steiner_solution(g, terminals, tree_edges)
