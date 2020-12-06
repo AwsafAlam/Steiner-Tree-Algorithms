@@ -127,10 +127,13 @@ def get_steiner_tree(g, Y):
     SkD = {}
     for i in range(2, len(Y)):
         for Dtup in itertools.combinations(C, i):
+        # for Dtup in itertools.combinations(Y, i):
             D = frozenset(Dtup)
             for k in g:
                 E_and_F_trees = []
+                # algo_u outputs a list of sets
                 for E, F in algorithm_u(Dtup, 2):
+                    # CONSTRUCTING TREE BY ADDING E to base case
                     E_and_F_trees.append((S[frozenset([k]+E)], S[frozenset([k]+F)]))
                 SkD[(k, D)] = min(E_and_F_trees, key=lambda x: len(x[0]) + len(x[1]))
             for m in {q} if D == C else g:
@@ -259,7 +262,7 @@ def algorithm_u(ns, m):
 
 if __name__ == '__main__':
 
-    input_list = [7]
+    input_list = [0]
     for input in input_list:
 
         INPUT="./instances/instance"+str(input).zfill(3)+".gr"
@@ -309,7 +312,8 @@ if __name__ == '__main__':
         # print(terminals)
         # starting time
         ###
-
+        for k in g:
+            print(k)
         start = time.time()
 
         tree_edges = get_steiner_tree(g, terminals)
