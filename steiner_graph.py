@@ -2,7 +2,7 @@ from __future__ import print_function
 import collections
 import itertools
 import random
-
+import time
 import graphviz
 
 # Types::
@@ -257,9 +257,15 @@ def algorithm_u(ns, m):
     return f(m, n, 0, n, a)
 
 if __name__ == '__main__':
-    g = create_random_graph(40, 0.10)
+    g = create_random_graph(20, 0.10)
     terminals = pick_random_terminals(g)
+    # starting time
+    start = time.time()
+
     tree_edges = get_steiner_tree(g, terminals)
+    # end time
+    end = time.time()
     print("Terminals & Tree Edges:")
     print(terminals, tree_edges)
+    print(f"Runtime of the program is {end - start}")
     # render_steiner_solution(g, terminals, tree_edges)
