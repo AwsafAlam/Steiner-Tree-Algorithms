@@ -266,7 +266,7 @@ if __name__ == '__main__':
     datafile = open('data.txt','w')
     # input_list = [0,1,9,7,11,27,29,31,33,53,55,57,59,61,69,71,81]
     # input_list = [55,57,59,61,69,71,81]
-    input_list = [0,1,9,7,11,27]
+    input_list = [0]
     nodelist = []
     edgelist = []
     timelist = []
@@ -329,9 +329,11 @@ if __name__ == '__main__':
         
         end = time.time()
         
-        print("Terminals: ----")
+        print("Graph: \n--------------------------------")
+        print(g)
+        print("Terminals: \n--------------------------------")
         print(terminals)
-        print("Tree edges ---- ")
+        print("Tree edges \n-------------------------------- ")
         print(tree_edges)
         print(f"Cost : {len(tree_edges)*2}")
         runtime = end - start
