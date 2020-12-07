@@ -1,0 +1,27 @@
+SECTION Graph
+Nodes 14
+Edges 13
+E 1 25 26
+E 7 9 30
+E 7 29 6
+E 8 28 64
+E 8 29 62
+E 11 53 2
+E 11 14 42
+E 14 28 18
+E 17 29 42
+E 17 24 62
+E 24 40 75
+E 25 47 28
+E 47 53 46
+END
+
+SECTION Terminals
+Terminals 4
+T 1
+T 9
+T 40
+T 47
+END
+
+EOF

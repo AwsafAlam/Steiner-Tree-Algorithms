@@ -2,8 +2,9 @@ from __future__ import print_function
 import collections
 import itertools
 import random
-
+import time
 import graphviz
+import matplotlib.pyplot as plt
 
 # Types::
 # Node: str
@@ -57,6 +58,7 @@ def render_steiner_solution(g, terminals, tree_edges):
 def create_random_graph(n, p):
     vs = [str(i) for i in range(n)]
     edge_count = int(round(p*(n-1)*n/2))
+    print("n: {} | Edges - rand-graph: {}".format(n,edge_count))
     es = sample_iterable(generate_all_possible_edges(vs), edge_count)
     g = {v: [] for v in vs}
     for v0, v1 in es:
@@ -126,10 +128,13 @@ def get_steiner_tree(g, Y):
     SkD = {}
     for i in range(2, len(Y)):
         for Dtup in itertools.combinations(C, i):
+        # for Dtup in itertools.combinations(Y, i):
             D = frozenset(Dtup)
             for k in g:
                 E_and_F_trees = []
+                # algo_u outputs a list of sets
                 for E, F in algorithm_u(Dtup, 2):
+                    # CONSTRUCTING TREE BY ADDING E to base case
                     E_and_F_trees.append((S[frozenset([k]+E)], S[frozenset([k]+F)]))
                 SkD[(k, D)] = min(E_and_F_trees, key=lambda x: len(x[0]) + len(x[1]))
             for m in {q} if D == C else g:
@@ -257,9 +262,112 @@ def algorithm_u(ns, m):
     return f(m, n, 0, n, a)
 
 if __name__ == '__main__':
-    g = create_random_graph(40, 0.10)
-    terminals = pick_random_terminals(g)
-    tree_edges = get_steiner_tree(g, terminals)
-    print("Terminals & Tree Edges:")
-    print(terminals, tree_edges)
+
+    datafile = open('data.txt','w')
+    # input_list = [0,1,9,7,11,27,29,31,33,53,55,57,59,61,69,71,81]
+    # input_list = [55,57,59,61,69,71,81]
+    input_list = [0]
+    nodelist = []
+    edgelist = []
+    timelist = []
+    terminallist = []
+    for input in input_list:
+
+        INPUT="./instances/instance"+str(input).zfill(3)+".gr"
+
+        f = open(INPUT, 'r')
+        lines = f.readlines()
+        Nodes = int(lines[1].split()[1])
+        Edges = int(lines[2].split()[1])
+        nodelist.append(Nodes)
+        edgelist.append(Edges)
+
+        vs = [str(i) for i in range(Nodes)]
+        g = {v: [] for v in vs}
+
+        print(Nodes, Edges)
+        
+        lineCount = 3
+        while str(lines[lineCount].split()[0]) != "END":
+            if(len(lines[lineCount].split()) == 0):
+                continue
+
+            v0 = str(int(lines[lineCount].split()[1]) - 1)
+            v1 = str(int(lines[lineCount].split()[2]) - 1)
+            g[v0].append(v1)
+            g[v1].append(v0)
+            lineCount += 1
+        
+        lineCount += 3
+        noOfTerminals = int(lines[lineCount].split()[1])
+        terminallist.append(noOfTerminals)
+        lineCount += 1
+        term = []
+        while str(lines[lineCount].split()[0]) != "END":    
+            if(len(lines[lineCount].split()) == 0):
+                continue
+            # print(lines[lineCount])
+            term.append(lines[lineCount].split()[1])
+            
+            lineCount += 1
+        
+        terminals = frozenset(term)
+        print("No. of terminals : {}".format(noOfTerminals))
+        # print("Input graph :",g)
+        # print("Terminals", terminals)
+        ####
+        # Random graph 
+        # g = create_random_graph(5, 0.10)
+        # print(g)
+        # terminals = pick_random_terminals(g)
+        # print(terminals)
+        # starting time
+        ###
+        start = time.time()
+
+        tree_edges = get_steiner_tree(g, terminals)
+        
+        end = time.time()
+        
+        print("Graph: \n--------------------------------")
+        print(g)
+        print("Terminals: \n--------------------------------")
+        print(terminals)
+        print("Tree edges \n-------------------------------- ")
+        print(tree_edges)
+        print(f"Cost : {len(tree_edges)*2}")
+        runtime = end - start
+        timelist.append(runtime)
+        datafile.write(str(Nodes)+" "+str(Edges)+" "+str(noOfTerminals)+" "+str(runtime)+"\n")
+
+        print(f"Runtime of the program is {runtime} seconds")
+        print("------------------------------")
+        f.close()
+
+
+    datafile.close()
+
+    plt.ylabel('Running time', fontsize=14)
+    plt.grid(True)
+    
+    plt.scatter(nodelist, timelist)
+    plt.show()
+    
+    plt.plot(nodelist, timelist, color='red', marker='o')
+    plt.xlabel('Nodes', fontsize=14)
+    plt.show()
+    
+    plt.scatter(edgelist, timelist, color='blue', marker='o')
+    plt.show()
+
+    plt.plot(edgelist, timelist, color='blue', marker='o')
+    plt.xlabel('Edges', fontsize=14)
+    plt.show()
+    
+    plt.scatter(terminallist, timelist, color='green', marker='o')
+    plt.show()
+
+    plt.plot(terminallist, timelist, color='green', marker='o')
+    plt.xlabel('Terminals', fontsize=14)
+    plt.show()
     # render_steiner_solution(g, terminals, tree_edges)
