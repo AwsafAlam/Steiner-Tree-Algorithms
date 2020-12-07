@@ -4,6 +4,7 @@ import itertools
 import random
 import time
 import graphviz
+import matplotlib.pyplot as plt
 
 # Types::
 # Node: str
@@ -262,7 +263,14 @@ def algorithm_u(ns, m):
 
 if __name__ == '__main__':
 
-    input_list = [0,3,5,7,9,11,13,15]
+    datafile = open('data.txt','w')
+    # input_list = [0,1,9,7,11,27,29,31,33,53,55,57,59,61,69,71,81]
+    # input_list = [55,57,59,61,69,71,81]
+    input_list = [0,1,9,7,11,27]
+    nodelist = []
+    edgelist = []
+    timelist = []
+    terminallist = []
     for input in input_list:
 
         INPUT="./instances/instance"+str(input).zfill(3)+".gr"
@@ -271,6 +279,8 @@ if __name__ == '__main__':
         lines = f.readlines()
         Nodes = int(lines[1].split()[1])
         Edges = int(lines[2].split()[1])
+        nodelist.append(Nodes)
+        edgelist.append(Edges)
 
         vs = [str(i) for i in range(Nodes)]
         g = {v: [] for v in vs}
@@ -290,6 +300,7 @@ if __name__ == '__main__':
         
         lineCount += 3
         noOfTerminals = int(lines[lineCount].split()[1])
+        terminallist.append(noOfTerminals)
         lineCount += 1
         term = []
         while str(lines[lineCount].split()[0]) != "END":    
@@ -312,8 +323,6 @@ if __name__ == '__main__':
         # print(terminals)
         # starting time
         ###
-        for k in g:
-            print(k)
         start = time.time()
 
         tree_edges = get_steiner_tree(g, terminals)
@@ -325,8 +334,38 @@ if __name__ == '__main__':
         print("Tree edges ---- ")
         print(tree_edges)
         print(f"Cost : {len(tree_edges)*2}")
-        print(f"Runtime of the program is {end - start}")
+        runtime = end - start
+        timelist.append(runtime)
+        datafile.write(str(Nodes)+" "+str(Edges)+" "+str(noOfTerminals)+" "+str(runtime)+"\n")
+
+        print(f"Runtime of the program is {runtime} seconds")
         print("------------------------------")
         f.close()
 
+
+    datafile.close()
+
+    plt.ylabel('Running time', fontsize=14)
+    plt.grid(True)
+    
+    plt.scatter(nodelist, timelist)
+    plt.show()
+    
+    plt.plot(nodelist, timelist, color='red', marker='o')
+    plt.xlabel('Nodes', fontsize=14)
+    plt.show()
+    
+    plt.scatter(edgelist, timelist, color='blue', marker='o')
+    plt.show()
+
+    plt.plot(edgelist, timelist, color='blue', marker='o')
+    plt.xlabel('Edges', fontsize=14)
+    plt.show()
+    
+    plt.scatter(terminallist, timelist, color='green', marker='o')
+    plt.show()
+
+    plt.plot(terminallist, timelist, color='green', marker='o')
+    plt.xlabel('Terminals', fontsize=14)
+    plt.show()
     # render_steiner_solution(g, terminals, tree_edges)
